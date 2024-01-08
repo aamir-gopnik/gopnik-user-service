@@ -37,8 +37,8 @@ public class AppUser implements UserDetails {
     private String password;
     @Enumerated(EnumType.STRING)
     private AppUserRole appUserRole;
-    private boolean isAccountEnabled;
-    private boolean isAccountLocked;
+    private Boolean isAccountEnabled = false;
+    private Boolean isAccountLocked = false;
 
     public AppUser(String firstName, String lastName, String email, String password, AppUserRole appUserRole) {
         this.firstName = firstName;
