@@ -45,7 +45,8 @@ public class AppUserService implements UserDetailsService {
         appUser.setPassword(encodedPassword);
         appUserRepository.save(appUser);
 
-        // Preparing confirmation token
+        // Preparing confirmation token to be saved against user.
+        // It will be later used for email verification
         
         String token = UUID.randomUUID().toString();
         ConfirmationToken confirmationToken = new ConfirmationToken(
@@ -59,8 +60,7 @@ public class AppUserService implements UserDetailsService {
         return token;
     }
 
-
-    public void enableAppUser(String email) {
-
+    public int enableAppUser(String email) {
+        return appUserRepository.enableAppUser(email);
     }
 }
