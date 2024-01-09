@@ -40,7 +40,7 @@ public class RegistrationService {
                         ));
         String verificationLink = "http://localhost:8888/api/v1/registration/confirm?token="+token;
         emailSender.send(request.getEmail(), buildEmail(request.getFirstName(),verificationLink));
-        return token;
+        return  token;
     }
 
     @Transactional
@@ -61,7 +61,7 @@ public class RegistrationService {
         confirmationTokenService.setConfirmedAt(token);
         appUserService.enableAppUser(
                 confirmationToken.getAppUser().getEmail());
-        return "confirmed";
+        return "Mail verification successful.";
     }
 
     private String buildEmail(String name, String link) {

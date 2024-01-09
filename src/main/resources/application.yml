@@ -6,7 +6,7 @@ server:
 
 spring:
   datasource:
-    password: Matru@003
+    password: ${password}
     url: jdbc:postgresql://localhost:5555/USERS
     username: postgres
 
