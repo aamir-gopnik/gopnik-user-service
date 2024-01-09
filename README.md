@@ -10,11 +10,11 @@ Refer Below Design for overview
 
 
 
-curl --location --request POST 'localhost:8080/api/v1/registration' \
+curl --location --request POST 'localhost:8888/api/v1/registration' \
 --header 'Content-Type: application/json' \
---data-raw '{
-"firstName": "Amigos",
-"lastName": "Code",
-"email": "hellow@amigoscode.com",
-"password": "password"
-}'
+{ \
+"firstName":"userFirstName", \
+"lastName": "userSecondName", \
+"email": "firstname.lastname@gmail.com", \
+"password" : "password123" \
+}
