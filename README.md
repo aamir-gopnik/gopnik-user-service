@@ -11,7 +11,7 @@ Refer Below Design for overview
 
 
 curl --location --request POST 'localhost:8080/api/v1/registration' \
---header 'Content-Type: application/json'
+--header 'Content-Type: application/json' \
 {
 "firstName":"userFirstName",
 "lastName": "userSecondName",
