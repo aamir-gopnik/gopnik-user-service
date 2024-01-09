@@ -29,6 +29,7 @@ public class EmailService implements EmailSender{
             messageHelper.setTo(to);
             messageHelper.setSubject("Confirm your email");
             messageHelper.setFrom("userservice@gopnik.com");
+            mailSender.send(mimeMessage);
         } catch (MessagingException me){
             LOGGER.error("Failed to send email ", me);
             throw new IllegalStateException("Failed to send email");
