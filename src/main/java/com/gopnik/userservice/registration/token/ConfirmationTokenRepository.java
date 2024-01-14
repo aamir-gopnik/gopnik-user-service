@@ -22,4 +22,5 @@ public interface ConfirmationTokenRepository extends JpaRepository<ConfirmationT
                           LocalDateTime confirmedAt);
 
 
+
 }
