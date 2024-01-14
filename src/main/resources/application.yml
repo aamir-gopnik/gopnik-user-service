@@ -5,8 +5,12 @@ server:
     include-binding-errors: always
 
 spring:
+  security:
+    user:
+      name: aamir
+      password: abc123
   datasource:
-    password: Matru@003
+    password: ${password}
     url: jdbc:postgresql://localhost:5555/USERS
     username: postgres
 
