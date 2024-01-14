@@ -18,3 +18,14 @@ curl --location --request POST 'localhost:8888/api/v1/registration' \
 "email": "firstname.lastname@gmail.com", \
 "password" : "password123" \
 }
+
+
+
+curl --request GET 'http://localhost:8888/auth/login' \
+--BODY
+{ \
+"email":"aamir", \
+"password":"abc123" \
+}
+
+curl -- http://localhost:8888/home/checkAuthWorking \
