@@ -34,11 +34,12 @@ public class JWTHelper {
 
     //Get Claims using the secret key
     private Claims getAllClaimsFromToken(String token) {
-        SecretKeySpec secretKeySpec = new SecretKeySpec(secretKey.getEncoded(), "HS256");
-        return Jwts.parser()
-                .decryptWith(secretKeySpec).build()
-                .parseEncryptedClaims(token)
+        Claims c =  Jwts.parser()
+                .verifyWith(secretKey).build()
+                .parseSignedClaims(token)
                 .getPayload();
+        System.out.println("subject in claim is " + c.getSubject());
+        return  c;
     }
 
     //check if the token has expired
@@ -63,7 +64,7 @@ public class JWTHelper {
                 .add("alg","HS256")
                 .add("typ","JWT")
                 .and()
-                .claim("username",username)
+                .subject(username)
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
                 .signWith(secretKey).compact();
