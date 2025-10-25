@@ -2,9 +2,8 @@ package com.gopnik.userservice.login;
 
 import com.gopnik.userservice.appuser.AppUserService;
 import com.gopnik.userservice.jwtimplementation.JWTHelper;
-import com.gopnik.userservice.jwtimplementation.model.JWTRequest;
-import com.gopnik.userservice.jwtimplementation.model.JWTResponse;
-import lombok.AllArgsConstructor;
+import com.gopnik.userservice.jwtimplementation.model.LoginRequest;
+import com.gopnik.userservice.jwtimplementation.model.JWTAuthResponse;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +14,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -35,16 +33,17 @@ public class LoginAuthController {
     Logger logger = LoggerFactory.getLogger(LoginAuthController.class);
 
     @PostMapping("/login")
-    public ResponseEntity<JWTResponse> login(@RequestBody JWTRequest request) {
+    public ResponseEntity<JWTAuthResponse> login(@RequestBody LoginRequest request) {
 
         this.doAuthenticate(request.getEmail(), request.getPassword());
         UserDetails userDetails = appUserService.loadUserByUsername(request.getEmail());
         logger.info(userDetails.getUsername());
         String token = this.jwtHelper.generateToken(userDetails);
 
-        JWTResponse response = JWTResponse.builder()
+        JWTAuthResponse response = JWTAuthResponse.builder()
                 .jwtToken(token)
-                .username(userDetails.getUsername()).build();
+                .userName(userDetails.getUsername())
+                .build();
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 

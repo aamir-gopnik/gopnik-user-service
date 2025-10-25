@@ -3,6 +3,7 @@ package com.gopnik.userservice.registration;
 import com.gopnik.userservice.appuser.AppUser;
 import com.gopnik.userservice.appuser.AppUserRole;
 import com.gopnik.userservice.appuser.AppUserService;
+import com.gopnik.userservice.dao.UserDao;
 import com.gopnik.userservice.emailsender.EmailSender;
 import com.gopnik.userservice.registration.token.ConfirmationToken;
 import com.gopnik.userservice.registration.token.ConfirmationTokenService;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -22,6 +24,8 @@ public class RegistrationService {
     private final ConfirmationTokenService confirmationTokenService;
 
     private final EmailSender emailSender;
+
+    private final UserDao userDao;
 
     public String register(RegistrationRequest request){
         boolean isValid = RequestValidation.validateEmail(request.getEmail());
@@ -39,7 +43,8 @@ public class RegistrationService {
                         AppUserRole.USER
                         ));
         String verificationLink = "http://localhost:8888/api/v1/registration/confirm?token="+token;
-        emailSender.send(request.getEmail(), buildEmail(request.getFirstName(),verificationLink));
+        String emailContent = buildConfirmationEmail(request.getFirstName(), verificationLink);
+        emailSender.send(request.getEmail(), emailContent);
         return  token;
     }
 
@@ -64,7 +69,11 @@ public class RegistrationService {
         return "Mail verification successful.";
     }
 
-    private String buildEmail(String name, String link) {
+    public List<AppUser> getUserByFirstName(String firstName) {
+        return userDao.findAllUserWithGivenFirstName(firstName);
+    }
+
+    private String buildConfirmationEmail(String name, String link) {
         return "<div style=\"font-family:Helvetica,Arial,sans-serif;font-size:16px;margin:0;color:#0b0c0c\">\n" +
                 "\n" +
                 "<span style=\"display:none;font-size:1px;color:#fff;max-height:0\"></span>\n" +

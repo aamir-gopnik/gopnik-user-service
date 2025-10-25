@@ -4,29 +4,36 @@ server:
     include-message: always
     include-binding-errors: always
 
+# JWT Configuration
+jwt:
+  secret: your-256-bit-secret-key-change-this-in-production-make-it-long-and-secure
+  expiration: 86400000
+# 86400000 ms = 24 hours
+
 spring:
   security:
     user:
       name: aamir
       password: abc123
   datasource:
-    password: ${password}
-    url: jdbc:postgresql://localhost:5555/USERS
-    username: postgres
+    url: jdbc:h2:file:./data/gopnikDB
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: password
 
   jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
-      ddl-auto: 'create-drop'
-    properties:
-      hibernate:
-      dialect: org.hibernate.dialect.PostgreSQLDialect
-      format_sql: true
+      ddl-auto: update
     show-sql: true
+  h2:
+    console:
+      enabled: true
   mail:
-    host: localhost
-    port: 1025
-    username: hello
-    password: hello
+    host: smtp.gmail.com
+    port: 587
+    username: aamirkamaal1994@gmail.com
+    password: xxxx xxxx xxxx xxxx
     properties:
       mail:
         smtp:

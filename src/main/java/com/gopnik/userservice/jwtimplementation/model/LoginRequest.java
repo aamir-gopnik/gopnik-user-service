@@ -8,7 +8,7 @@ import lombok.*;
 @Setter
 @ToString
 @Builder
-public class JWTRequest {
+public class LoginRequest {
 
     private String email;
 

@@ -8,11 +8,9 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-public class JWTResponse {
+public class JWTAuthResponse {
 
+    private String userName;
+    private String firstName;
     private String jwtToken;
-
-    private String username;
-
-
 }

@@ -1,6 +1,8 @@
 package com.gopnik.userservice.emailsender;
 
+import java.util.concurrent.CompletableFuture;
+
 public interface EmailSender{
 
-    public void send(String to,String email);
+    CompletableFuture<Void> send(String to, String email);
 }

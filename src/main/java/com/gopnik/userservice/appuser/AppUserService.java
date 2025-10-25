@@ -2,14 +2,12 @@ package com.gopnik.userservice.appuser;
 
 import com.gopnik.userservice.registration.token.ConfirmationToken;
 import com.gopnik.userservice.registration.token.ConfirmationTokenService;
-import com.gopnik.userservice.security.PasswordEncoder;
-import com.gopnik.userservice.security.config.WebSecurityConfig;
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -41,7 +39,7 @@ public class AppUserService implements UserDetailsService {
             throw new IllegalStateException("User already exists");
         }
 
-        String encodedPassword = passwordEncoder.passEncoder().encode(appUser.getPassword());
+        String encodedPassword = passwordEncoder.encode(appUser.getPassword());
         appUser.setPassword(encodedPassword);
         appUserRepository.save(appUser);
 
@@ -60,7 +58,7 @@ public class AppUserService implements UserDetailsService {
         return token;
     }
 
-    public int enableAppUser(String email) {
-        return appUserRepository.enableAppUser(email);
+    public void enableAppUser(String email) {
+        appUserRepository.enableAppUser(email);
     }
 }

@@ -7,36 +7,54 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.AllArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.List;
 
 @Component
+@Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
     //This class will check the token present in request header and is valid token for each request
     //coming to our controllers
-    private Logger logger = LoggerFactory.getLogger(OncePerRequestFilter.class);
+
     @Autowired
     private JWTHelper jwtHelper;
+
     @Autowired
     private AppUserService appUserService;
+
+    private final AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private static final List<String> EXCLUDED_PATTERNS = List.of(
+            "/h2-console/**",
+            "api/v1/registration",
+            "/actuator/**",
+            "/swagger-ui/**",
+            "/v3/api-docs/**"
+    );
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+        String path = request.getRequestURI();
+        return EXCLUDED_PATTERNS.stream()
+                .anyMatch(pattern -> pathMatcher.match(pattern, path));
+    }
 
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String requestHeader = request.getHeader("Authorization");
-        logger.info(" Header :  {}", requestHeader);
+        log.info(" Header :  {}", requestHeader);
         String username = null;
         String token = null;
         if (requestHeader != null && requestHeader.startsWith("Bearer")) {
@@ -44,7 +62,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             token = requestHeader.substring(7);
             try {
                 username = this.jwtHelper.getUsernameFromToken(token);
-                logger.info(" username extracted :  {}", username);
+                log.info(" username extracted :  {}", username);
 
             } catch (IllegalArgumentException e) {
                 logger.info("Illegal Argument while fetching the username !!");
@@ -57,7 +75,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             }
 
         } else {
-            logger.info("Invalid Header Value !!!! ");
+            log.info("Invalid Header Value !!!! ");
         }
 
         //if username is present in token then below code will update the SecurityContextHolder
@@ -65,7 +83,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             //fetch user detail from username
-            logger.info("This is working");
+            logger.info("Auth Filter intercepted");
             UserDetails userDetails = this.appUserService.loadUserByUsername(username);
             Boolean validateToken = this.jwtHelper.validateToken(token, userDetails);
             if (validateToken) {
